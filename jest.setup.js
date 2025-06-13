@@ -50,14 +50,15 @@ process.on('unhandledRejection', (reason, promise) => {
 });
 
 // Global error handler for tests
+const originalConsoleError = console.error;
 global.console = {
   ...console,
   // Override console.error to capture test errors
   error: (...args) => {
-    if (args[0] && args[0].includes && args[0].includes('Test failed')) {
+    if (args[0] && typeof args[0] === 'string' && args[0].includes('Test failed')) {
       console.log('🔍 Test Debug Info:', ...args);
     } else {
-      console.error(...args);
+      originalConsoleError(...args);
     }
   }
 };
