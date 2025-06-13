@@ -8,6 +8,8 @@
     "test:debug": "NODE_ENV=debug jest --verbose",
     "test:api": "jest --forceExit --testPathPattern='api.test.js'",
     "test:flow": "jest --forceExit --testPathPattern='full-flow.test.js'",
+    "test:puppeteer": "jest --forceExit --testPathPattern='login.test.js'",
+    "test:puppeteer:debug": "NODE_ENV=debug jest --verbose --testPathPattern='login.test.js'",
     "test:working": "jest --forceExit --testPathIgnorePatterns='login.test.js'",
     "test:ci": "jest --ci --coverage --forceExit --testPathIgnorePatterns='login.test.js'",
     "test:playwright": "playwright test",
