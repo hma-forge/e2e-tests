@@ -20,16 +20,13 @@ npm run test:debug
 ```
 e2e-tests/
 ├── tests/
-│   ├── api.test.js                    # ✅ API endpoint tests (Jest)
-│   ├── full-flow.test.js              # ✅ Complete application flow (Jest)
-│   ├── login.test.js                  # ❌ Legacy browser tests (Puppeteer)
-│   ├── auth.playwright.spec.ts        # ✅ Authentication flow (Playwright)
-│   └── routing.playwright.spec.ts     # ✅ Routing & 404 handling (Playwright)
-├── playwright.config.ts               # Playwright configuration
-├── package.json                       # Dependencies and scripts
-├── README.md                          # This file
-├── TESTING_GUIDE.md                   # Detailed testing guide
-└── TROUBLESHOOTING.md                 # Common issues and solutions
+│   ├── api.test.js        # ✅ API endpoint tests
+│   ├── full-flow.test.js  # ✅ Complete application flow
+│   └── login.test.js      # ❌ Browser tests (Puppeteer issues)
+├── package.json           # Dependencies and scripts
+├── README.md             # This file
+├── TESTING_GUIDE.md      # Detailed testing guide
+└── TROUBLESHOOTING.md    # Common issues and solutions
 ```
 
 ## Test Categories
@@ -50,31 +47,19 @@ Tests complete application workflow:
 - CORS and security headers
 - System health monitoring
 
-### 🎭 Playwright Browser Tests - **WORKING**
-Modern browser automation tests (`*.playwright.spec.ts`):
-- Complete authentication workflows
-- Client-side routing and 404 handling  
-- UI element validation
-- User experience flows
-- Better reliability than legacy tests
-
-### ⚠️ Legacy Browser Tests (`login.test.js`) - **DEPRECATED**
-Puppeteer-based UI tests (being phased out):
+### 🌐 Browser Tests (`login.test.js`) - **ISSUES**
+Puppeteer-based UI tests (currently failing due to browser compatibility):
 - Login form interaction
 - Navigation testing
-- **Status**: Being replaced by Playwright tests
+- UI element validation
+- User experience flows
 
 ## Running Tests
 
 ### Basic Usage
 ```bash
-# Run Jest tests (API + full-flow)
+# All tests
 npm test
-
-# Run Playwright tests (modern browser tests)
-npm run test:playwright
-npm run test:playwright:headed    # With browser window
-npm run test:playwright:debug     # Debug mode
 
 # Specific test files
 npm test -- --testPathPattern="api.test.js"
@@ -155,10 +140,9 @@ Tests: 9 passed
 
 ## Technology Stack
 
-- **Jest** - Test framework and runner for API tests
-- **Playwright** - Modern browser automation for UI tests
+- **Jest** - Test framework and runner
 - **node-fetch** - HTTP client for API testing  
-- **Puppeteer** - Legacy browser automation (being phased out)
+- **Puppeteer** - Browser automation (for UI tests)
 - **Node.js** - Runtime environment
 
 ## Integration with CI/CD
@@ -193,12 +177,11 @@ cd ../e2e-tests && npm run test:watch
 | API Security     | ✅ Complete | Working          |
 | Frontend Serving | ✅ Complete | Working          |
 | Error Handling   | ✅ Complete | Working          |
-| UI Interactions  | ✅ Complete | Playwright Tests |
-| Routing & 404s   | ✅ Complete | Playwright Tests |
+| UI Interactions  | ⚠️ Partial | Puppeteer Issues |
 
 ## Next Steps
 
-1. **Remove Puppeteer**: Complete migration to Playwright tests  
+1. **Fix Puppeteer Issues**: Resolve browser compatibility for UI tests
 2. **Add Project Tests**: E2E tests for project management features  
 3. **Performance Tests**: Load testing and response time validation
 4. **Security Tests**: Comprehensive security validation
