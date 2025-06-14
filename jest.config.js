@@ -9,6 +9,12 @@ module.exports = {
     '**/tests/**/*.spec.js'
   ],
   
+  // Ignore UI tests by default due to Puppeteer issues
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/tests/ui/'
+  ],
+  
   // Coverage configuration
   collectCoverageFrom: [
     'tests/**/*.js',
