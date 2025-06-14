@@ -9,10 +9,6 @@ module.exports = {
     '**/tests/**/*.spec.js'
   ],
   
-  testPathIgnorePatterns: [
-    '/node_modules/'
-  ],
-  
   // Coverage configuration
   collectCoverageFrom: [
     'tests/**/*.js',
