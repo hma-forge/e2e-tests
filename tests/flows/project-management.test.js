@@ -1,30 +1,19 @@
+const { 
+  API_BASE, 
+  authenticate 
+} = require('../helpers/api-setup');
+
 describe('Project Management Flow', () => {
-  const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:8888';
-  const API_BASE = `${BASE_URL}/api`;
-  
   let authToken = null;
   let testProjectId = null;
 
   beforeAll(async () => {
     // Authenticate to get token
-    try {
-      const response = await fetch(`${API_BASE}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: 'admin@forge.local',
-          password: 'admin123'
-        })
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        authToken = data.token;
-        console.log('✅ Authentication successful for project tests');
-      } else {
-        console.log('ℹ️  Project tests skipped - authentication failed');
-      }
-    } catch (error) {
+    authToken = await authenticate();
+    
+    if (authToken) {
+      console.log('✅ Authentication successful for project tests');
+    } else {
       console.log('ℹ️  Project tests skipped - authentication failed');
     }
   });

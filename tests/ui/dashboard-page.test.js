@@ -1,4 +1,10 @@
-const puppeteer = require('puppeteer');
+const { 
+  launchBrowser, 
+  createPage, 
+  login, 
+  closeBrowser, 
+  closePage 
+} = require('../helpers/puppeteer-setup');
 
 describe('Dashboard Page UI Tests', () => {
   const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:8888';
@@ -6,65 +12,22 @@ describe('Dashboard Page UI Tests', () => {
   let page;
 
   beforeAll(async () => {
-    console.log('🚀 Launching browser for dashboard tests...');
-    
-    const launchOptions = {
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
-    };
-    
-    browser = await puppeteer.launch(launchOptions);
-    console.log('✅ Browser launched successfully');
+    browser = await launchBrowser();
   });
 
   beforeEach(async () => {
-    page = await browser.newPage();
-    
-    // Set viewport
-    await page.setViewport({ width: 1280, height: 800 });
-    
+    page = await createPage(browser);
     // Login before each test
-    await loginToDashboard(page);
+    await login(page, BASE_URL);
   });
 
   afterEach(async () => {
-    if (page) {
-      await page.close();
-    }
+    await closePage(page);
   });
 
   afterAll(async () => {
-    if (browser) {
-      await browser.close();
-      console.log('🧹 Browser closed');
-    }
+    await closeBrowser(browser);
   });
-
-  async function loginToDashboard(page) {
-    // Clear cookies first
-    await page.deleteCookie(...(await page.cookies()));
-    
-    // Go to login
-    await page.goto(`${BASE_URL}/login`);
-    await page.waitForSelector('input[type="email"]', { timeout: 10000 });
-    
-    // Login
-    await page.type('input[type="email"]', 'admin@forge.local');
-    await page.type('input[type="password"]', 'admin123');
-    
-    await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-      page.click('button[type="submit"]')
-    ]);
-    
-    // Should be on dashboard now
-    await page.waitForSelector('h2', { timeout: 10000 });
-  }
 
   test('should display welcome message', async () => {
     const welcomeHeading = await page.$eval('h2', el => el.textContent);

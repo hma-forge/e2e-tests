@@ -1,4 +1,10 @@
-const puppeteer = require('puppeteer');
+const { 
+  launchBrowser, 
+  createPage, 
+  clearSession, 
+  closeBrowser, 
+  closePage 
+} = require('../helpers/puppeteer-setup');
 
 describe('Login Page UI Tests', () => {
   const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:8888';
@@ -6,42 +12,20 @@ describe('Login Page UI Tests', () => {
   let page;
 
   beforeAll(async () => {
-    console.log('🚀 Launching browser for login page tests...');
-    
-    const launchOptions = {
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
-    };
-    
-    browser = await puppeteer.launch(launchOptions);
-    console.log('✅ Browser launched successfully');
+    browser = await launchBrowser();
   });
 
   beforeEach(async () => {
-    page = await browser.newPage();
-    // Clear all cookies to ensure we start fresh
-    await page.deleteCookie(...(await page.cookies()));
-    
-    // Set viewport
-    await page.setViewport({ width: 1280, height: 800 });
+    page = await createPage(browser);
+    await clearSession(page);
   });
 
   afterEach(async () => {
-    if (page) {
-      await page.close();
-    }
+    await closePage(page);
   });
 
   afterAll(async () => {
-    if (browser) {
-      await browser.close();
-      console.log('🧹 Browser closed');
-    }
+    await closeBrowser(browser);
   });
 
   test('should display login form elements', async () => {

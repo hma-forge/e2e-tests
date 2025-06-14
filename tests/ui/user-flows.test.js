@@ -1,4 +1,10 @@
-const puppeteer = require('puppeteer');
+const { 
+  launchBrowser, 
+  createPage, 
+  clearSession,
+  closeBrowser, 
+  closePage 
+} = require('../helpers/puppeteer-setup');
 
 describe('End-to-End User Flows', () => {
   let browser;
@@ -7,51 +13,22 @@ describe('End-to-End User Flows', () => {
   const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:8888';
 
   beforeAll(async () => {
-    console.log('🚀 Launching browser for E2E user flows...');
-    const launchOptions = {
-      headless: process.env.PUPPETEER_HEADLESS !== 'false',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-extensions'
-      ],
-      defaultViewport: { width: 1280, height: 720 },
-      timeout: 60000
-    };
-    
-    browser = await puppeteer.launch(launchOptions);
-    console.log('✅ Browser launched successfully');
+    browser = await launchBrowser();
   });
 
   afterAll(async () => {
-    if (browser) {
-      await browser.close();
-    }
+    await closeBrowser(browser);
   });
 
   beforeEach(async () => {
-    page = await browser.newPage();
-    page.setDefaultNavigationTimeout(30000);
-    page.setDefaultTimeout(30000);
-    
+    page = await createPage(browser);
     // Clear state for clean tests
     await page.goto(BASE_URL);
-    await page.deleteCookie(...(await page.cookies()));
-    await page.evaluate(() => {
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-      } catch (e) {
-        // Ignore security errors
-      }
-    });
+    await clearSession(page);
   });
 
   afterEach(async () => {
-    if (page) {
-      await page.close();
-    }
+    await closePage(page);
   });
 
   test('complete authentication workflow: login → dashboard → logout', async () => {
@@ -210,15 +187,7 @@ describe('End-to-End User Flows', () => {
     // Ensure we're logged out
     console.log('1/2 - Ensuring logged out state...');
     await page.goto(BASE_URL);
-    await page.deleteCookie(...(await page.cookies()));
-    await page.evaluate(() => {
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-      } catch (e) {
-        // Ignore security errors
-      }
-    });
+    await clearSession(page);
     
     // Try to access dashboard directly
     console.log('2/2 - Attempting to access protected route...');

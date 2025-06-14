@@ -1,4 +1,10 @@
-const puppeteer = require('puppeteer');
+const { 
+  launchBrowser, 
+  createPage, 
+  clearSession,
+  closeBrowser, 
+  closePage 
+} = require('../helpers/puppeteer-setup');
 
 describe('Navigation Flow Tests', () => {
   const BASE_URL = process.env.FRONTEND_URL || 'http://localhost:8888';
@@ -6,43 +12,24 @@ describe('Navigation Flow Tests', () => {
   let page;
 
   beforeAll(async () => {
-    console.log('🚀 Launching browser for navigation tests...');
-    
-    const launchOptions = {
-      headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
-    };
-    
-    browser = await puppeteer.launch(launchOptions);
-    console.log('✅ Browser launched successfully');
+    browser = await launchBrowser();
   });
 
   beforeEach(async () => {
-    page = await browser.newPage();
-    await page.setViewport({ width: 1280, height: 800 });
+    page = await createPage(browser);
   });
 
   afterEach(async () => {
-    if (page) {
-      await page.close();
-    }
+    await closePage(page);
   });
 
   afterAll(async () => {
-    if (browser) {
-      await browser.close();
-      console.log('🧹 Browser closed');
-    }
+    await closeBrowser(browser);
   });
 
   test('should redirect to login when not authenticated', async () => {
     // Clear cookies
-    await page.deleteCookie(...(await page.cookies()));
+    await clearSession(page);
     
     // Try to access dashboard
     await page.goto(`${BASE_URL}/`);
@@ -79,7 +66,7 @@ describe('Navigation Flow Tests', () => {
 
   test('should maintain session across page navigations', async () => {
     // Clear cookies and login
-    await page.deleteCookie(...(await page.cookies()));
+    await clearSession(page);
     
     await page.goto(`${BASE_URL}/login`);
     await page.waitForSelector('input[type="email"]', { timeout: 10000 });
@@ -113,7 +100,7 @@ describe('Navigation Flow Tests', () => {
 
   test('should handle direct URL access when authenticated', async () => {
     // Clear cookies and login first
-    await page.deleteCookie(...(await page.cookies()));
+    await clearSession(page);
     
     await page.goto(`${BASE_URL}/login`);
     await page.waitForSelector('input[type="email"]', { timeout: 10000 });
@@ -138,7 +125,7 @@ describe('Navigation Flow Tests', () => {
 
   test('should handle browser back/forward navigation', async () => {
     // Clear cookies and login
-    await page.deleteCookie(...(await page.cookies()));
+    await clearSession(page);
     
     await page.goto(`${BASE_URL}/login`);
     await page.waitForSelector('input[type="email"]', { timeout: 10000 });
