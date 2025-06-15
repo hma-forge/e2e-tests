@@ -2,7 +2,7 @@
 
 Comprehensive end-to-end tests for the complete Forge platform. These tests validate the entire application stack including API endpoints, authentication flow, frontend deployment, and system integration.
 
-## Quick Start
+## Quick start
 
 ```bash
 # Install dependencies
@@ -15,7 +15,7 @@ npm test
 npm run test:debug
 ```
 
-## Project Structure
+## Project structure
 
 ```
 e2e-tests/

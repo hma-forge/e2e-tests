@@ -1,17 +1,17 @@
 # Claude Context for Forge E2E Tests
 
-## Current State
+## Current state
 
 Comprehensive end-to-end testing suite for the complete Forge platform. Tests validate API endpoints, authentication flows, frontend deployment, and system integration.
 
-## Technology Stack
+## Technology stack
 
 - **Jest** - Test framework and runner
 - **node-fetch** - HTTP client for API testing  
 - **Puppeteer** - Browser automation (UI tests)
 - **Node.js 16+** - Runtime environment
 
-## Project Structure
+## Project structure
 
 ```
 e2e-tests/
